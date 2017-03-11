@@ -3,7 +3,7 @@
 #
 # Supports an optional onObserversChanged(observers, observerAdded, observerRemoved) method, to be
 # called when the observer list changes.
-import pull from 'micro-utils/lib/pull'
+import pull from 'nanotools/lib/pull'
 import emptySubscription from './emptySubscription'
 import defineObservableSymbol from './defineObservableSymbol'
 import subscribeObserverAdapter from './subscribeObserverAdapter'

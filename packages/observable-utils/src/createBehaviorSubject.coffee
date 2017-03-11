@@ -1,7 +1,6 @@
 # A minimalistic version of BehaviorSubject implemented using closures.
 
 import createSubject from './createSubject'
-import chain from 'micro-utils/lib/chain'
 
 export default createBehaviorSubject = (opts) ->
 	presentValue = null
