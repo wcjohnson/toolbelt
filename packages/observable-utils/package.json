@@ -11,7 +11,7 @@
     "test:mocha": "mocha --recursive lib/_tests_/*.test.js"
   },
   "dependencies": {
-    "nanotools": "^0.0.1",
+    "nanotools": "^0.1.0",
     "symbol-observable": "^1.0.4"
   },
   "devDependencies": {
