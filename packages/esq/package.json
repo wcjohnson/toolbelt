@@ -4,6 +4,7 @@
   "description": "Easily build elasticsearch queries",
   "author": "Rahul Patel <rahul.patel@holidayextras.com>",
   "license": "MIT",
+  "private": true,
   "repository": {
     "type": "git",
     "url": "http://github.com/holidayextras/esq"
@@ -14,8 +15,7 @@
   },
   "main": "esq.js",
   "scripts": {
-    "test": "mocha",
-    "prepublish": "./node_modules/.bin/uglifyjs ./esq.js --compress --output ./esq.min.js"
+    "test": "mocha"
   },
   "keywords": [
     "elasticsearch",
