@@ -7,6 +7,8 @@ none = {}
 defaultArrayProjection = (x) -> x.slice()
 defaultObjectProjection = (x) -> Object.assign({}, x)
 
+# Like Rx's combineLatest, supporting any ES7 compatible observable, and also supports key-value
+# maps of observables, rather than just arrays.
 export default combineLatest = (observables, projection) ->
 	# Basic demographics about the observables
 	isArray = Array.isArray(observables)

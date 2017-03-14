@@ -48,7 +48,7 @@ export default createSubject = (opts) ->
 			onObserversChanged?(observers, observer, null)
 			# Subscription object
 			sub = createSubscription(observer, ->
-				if pull(observers, observer) then onObserversChanged?(nextObservers, null, observer)
+				if pull(observers, observer) then onObserversChanged?(observers, null, observer)
 				return
 			)
 			observer.start?(sub)
