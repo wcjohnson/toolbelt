@@ -2,6 +2,7 @@ build/
 node_modules/
 docs/
 doc/
+src/
 lib/_tests_/
 es/_tests_/
 .nyc_output/

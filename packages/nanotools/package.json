@@ -8,7 +8,7 @@
     "build:coffee": "mkdirp build/coffee && coffee --compile --output build/coffee/ src/",
     "build:babel:commonjs": "mkdirp lib && cross-env BABEL_ENV=commonjs babel build/coffee --out-dir lib",
     "build": "npm run build:coffee && npm run build:babel:commonjs",
-    "test": "npm run build && npm run test:mocha",
+    "test": "npm run test:mocha",
     "test:mocha": "mocha --recursive lib/_tests_/*.test.js"
   },
   "devDependencies": {
