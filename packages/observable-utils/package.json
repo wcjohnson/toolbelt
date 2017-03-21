@@ -1,6 +1,6 @@
 {
   "name": "observable-utils",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Small, fast, bundle-efficient utilities for working with ES7 observables.",
   "scripts": {
     "prepublish": "npm run clean && npm run build",
@@ -12,7 +12,7 @@
     "test:mocha": "mocha --recursive lib/_tests_/*.test.js"
   },
   "dependencies": {
-    "nanotools": "^0.1.1",
+    "nanotools": "^0.1.2",
     "symbol-observable": "^1.0.4"
   },
   "devDependencies": {

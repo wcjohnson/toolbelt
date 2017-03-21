@@ -1,6 +1,6 @@
 {
   "name": "nanotools",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Small, fast, bundle-efficient utilities for general JavaScript.",
   "scripts": {
     "prepublish": "npm run clean && npm run build",
