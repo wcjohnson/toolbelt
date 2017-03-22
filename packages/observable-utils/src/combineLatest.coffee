@@ -82,7 +82,7 @@ export default combineLatest = (observables, projection) ->
 			subscribeOne(k, v) for k,v of observables
 
 		# Create the subscription object.
-		sub = createSubscription(observer, -> unsubscribeAll())
+		sub = createSubscription(observer, unsubscribeAll)
 		observer.start?(sub)
 		sub
 
