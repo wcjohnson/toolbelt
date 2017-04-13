@@ -2,7 +2,7 @@
 export default test = (observable, always, expectations) ->
 	currentIndex = 0
 
-	observable.subscribe({
+	subscr = observable.subscribe({
 		start: ->
 			always?('start')
 			currentIndex = 0
@@ -22,3 +22,9 @@ export default test = (observable, always, expectations) ->
 			if not (expectations[currentIndex] is 'error')
 				throw new Error("Unexpected error at #{currentIndex}")
 	})
+
+	nextSubscr = {
+		unsubscribe: ->
+			if currentIndex < expectations.length then throw new Error("Leftover expectations")
+			subscr.unsubscribe()
+	}
