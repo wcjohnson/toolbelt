@@ -1,5 +1,4 @@
 # A minimalistic version of Rx's BehaviorSubject implemented using closures.
-
 import createSubject from './createSubject'
 
 export default createBehaviorSubject = (opts) ->
@@ -13,14 +12,14 @@ export default createBehaviorSubject = (opts) ->
 	subjectSubscribe = observable.subscribe
 	observable.next = (x) ->
 		nexted = true
-		subjectNext(presentValue = x)
-	observable.subscribe = (x) ->
+		subjectNext.call(this, presentValue = x)
+	observable.subscribe = (observer) ->
 		# Bugfix: subjectSubscribe can trigger a next as a side effect. In that case, we
 		# don't want to trigger another. Mark here...
 		nexted = false
-		sub = subjectSubscribe(x)
+		sub = subjectSubscribe.call(this, observer)
 		# ...and elide double next if it was called.
-		if (not sub.closed) and (not nexted) then x.next?(presentValue)
+		if (not sub.closed) and (not nexted) then observer.next?(presentValue)
 		sub
 
 	# Add getter for current value

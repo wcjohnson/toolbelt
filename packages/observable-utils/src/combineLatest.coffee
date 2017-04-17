@@ -1,5 +1,5 @@
 import createSubscription from './createSubscription'
-import defineObservableSymbol from './defineObservableSymbol'
+import defineObservable from './defineObservable'
 import subscribeObserverAdapter from './subscribeObserverAdapter'
 
 none = {}
@@ -87,4 +87,4 @@ export default combineLatest = (observables, projection) ->
 		sub
 
 	# Finish the observable object.
-	defineObservableSymbol({subscribe})
+	defineObservable({subscribe})

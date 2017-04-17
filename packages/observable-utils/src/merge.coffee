@@ -1,5 +1,5 @@
 import subscribeObserverAdapter from './subscribeObserverAdapter'
-import defineObservableSymbol from './defineObservableSymbol'
+import defineObservable from './defineObservable'
 import createSubscription from './createSubscription'
 
 # Merge multiple observables into one observable.
@@ -34,17 +34,9 @@ export default merge = (observables, observableConstructor) ->
 
     observables.forEach(subscribeOne)
 
-    if observableConstructor
-      # We only need to return a cleanup method if we have an Observable
-      # library on hand.
-      return unsubscribeAll
-    else
-      # Otherwise we need to make an actual subscription.
-      sub = createSubscription(observer, unsubscribeAll)
-      observer.start?(sub)
-      sub
+    # Make a subscription
+    sub = createSubscription(observer, unsubscribeAll)
+    observer.start?(sub)
+    sub
 
-  if observableConstructor
-    new observableConstructor(subscribe)
-  else
-    defineObservableSymbol({subscribe})
+  defineObservable({subscribe})

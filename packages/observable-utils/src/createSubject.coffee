@@ -5,12 +5,13 @@
 # called when the observer list changes.
 import pull from 'nanotools/lib/pull'
 import emptySubscription from './emptySubscription'
-import defineObservableSymbol from './defineObservableSymbol'
+import defineObservable from './defineObservable'
 import subscribeObserverAdapter from './subscribeObserverAdapter'
 import createSubscription from './createSubscription'
 
 export default createSubject = (opts) ->
 	onObserversChanged = opts?.onObserversChanged
+	onObserverStarted = opts?.onObserverStarted
 
 	observers = []
 	hasError = false
@@ -52,6 +53,8 @@ export default createSubject = (opts) ->
 				return
 			)
 			observer.start?(sub)
+			# start may have removed the observer.
+			if observer in observers then onObserverStarted?(observer, observers)
 			sub
 
-	defineObservableSymbol({ next, error, complete, subscribe })
+	defineObservable({ next, error, complete, subscribe })
