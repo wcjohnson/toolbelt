@@ -5,6 +5,8 @@ export default test = (observable, always, expectations) ->
 	subscr = observable.subscribe({
 		start: ->
 			always?('start')
+			if currentIndex > 0
+				throw new Error("Got value before start")
 			currentIndex = 0
 
 		next: (x) ->
@@ -14,12 +16,12 @@ export default test = (observable, always, expectations) ->
 
 		complete: ->
 			always?('complete')
-			if not (expectations[currentIndex] is 'complete')
+			if not (expectations[currentIndex++] is 'complete')
 				throw new Error("Unexpected completion at #{currentIndex}")
 
 		error: (err) ->
 			always?('error', err)
-			if not (expectations[currentIndex] is 'error')
+			if not (expectations[currentIndex++] is 'error')
 				throw new Error("Unexpected error at #{currentIndex}")
 	})
 
