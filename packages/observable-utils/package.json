@@ -1,6 +1,6 @@
 {
   "name": "observable-utils",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "description": "Small, fast, bundle-efficient utilities for working with ES7 observables.",
   "scripts": {
     "prepublish": "npm run clean && npm run build",
