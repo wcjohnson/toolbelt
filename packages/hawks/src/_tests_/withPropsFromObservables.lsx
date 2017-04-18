@@ -1,0 +1,27 @@
+import React from 'react'
+import renderer from 'react-test-renderer'
+
+import { expect } from 'chai'
+import createBehaviorSubject from 'observable-utils/lib/createBehaviorSubject'
+import withPropsFromObservables from '../withPropsFromObservables'
+
+describe('withPropsFromObservables', ->
+  it('should work', ->
+    subj$ = createBehaviorSubject()
+    subj$.next(1)
+
+    Comp = withPropsFromObservables( -> ({
+      observed: subj$
+    }))((props) ->
+      <div>{props.observed}</div>
+    )
+
+    rendered = renderer.create(<Comp />)
+    expect(rendered.toJSON().children[0]).to.equal(1)
+    console.log(rendered.toJSON())
+
+    subj$.next(2)
+    expect(rendered.toJSON().children[0]).to.equal(2)
+    console.log(rendered.toJSON())
+  )
+)

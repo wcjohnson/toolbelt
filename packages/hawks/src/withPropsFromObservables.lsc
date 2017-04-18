@@ -1,0 +1,67 @@
+import React from 'react'
+
+unsubscribeFrom(k, subMap, subMapEntry) ->
+  subMapEntry[1].unsubscribe()
+  delete subMap[k]
+
+subscribeTo(k, subMap, observable, component) ->
+  if not observable: return
+  subscription = observable.subscribe({
+    next: (value) ->
+      d = {}; d[k] = value; component.setState(d)
+  })
+  subMap[k] = [ observable, subscription ]
+
+truthyFunction() -> true
+
+export default withPropsFromObservables(mapOfProps, shouldUpdate = truthyFunction) -> (NextComponent) ->
+  class withPropsFromObservables extends React.PureComponent:
+    constructor(props) ->
+      super(props)
+      this.state = {}
+      this._subscriptionMap = {}
+
+    updateFromProps(props) ->
+      observableMap = mapOfProps(props)
+      subscriptionMap = this._subscriptionMap
+
+      // For each observable in the new map...
+      for key k, val observable in observableMap:
+        currentSub = subscriptionMap[k]
+        // If we are currently subscribed to the key...
+        if currentSub:
+          // If the key is not mapped to the correct observable right now, unsubscribe
+          if currentSub[0] != observable:
+            unsubscribeFrom(k, subscriptionMap, currentSub)
+            subscribeTo(k, subscriptionMap, observable, this)
+          // If mapped to the correct observable, do nothing.
+        else:
+          // We aren't subscribed to the key at all.
+          subscribeTo(k, subscriptionMap, observable, this)
+
+      // For each subscription...
+      for key k, val currentSub in subscriptionMap:
+        // If not in the observableMap...
+        if not (k in observableMap):
+          // Unsubscribe.
+          unsubscribeFrom(k, subscriptionMap, currentSub)
+
+    unsubscribeAll() ->
+      for key k, val currentSub in this._subscriptionMap:
+        unsubscribeFrom(k, this._subscriptionMap, currentSub)
+      this._subscriptionMap = {}
+
+    componentWillMount() ->
+      this.updateFromProps(this.props)
+
+    componentWillReceiveProps(nextProps) ->
+      if shouldUpdate(nextProps, this.props): this.updateFromProps(nextProps)
+
+    componentWillUnmount() ->
+      this.unsubscribeAll()
+
+    render() ->
+      passedProps = Object.assign({}, this.props, this.state)
+      React.createElement(NextComponent, passedProps)
+
+  withPropsFromObservables

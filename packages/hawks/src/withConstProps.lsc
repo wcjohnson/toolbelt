@@ -1,0 +1,6 @@
+// Create props that are initialized once at component creation time, then
+// never change throughout lifecycle.
+import withPropsOnChange from 'recompose/withPropsOnChange'
+
+export default withConstProps(propMap) ->
+  withPropsOnChange(-> false, propMap)
