@@ -36,8 +36,8 @@
   },
   "homepage": "https://github.com/wcjohnson/toolbelt",
   "devDependencies": {
-    "@oigroup/babel-plugin-lightscript": "^0.4.17",
-    "@oigroup/lightscript-eslint": "^0.4.17",
+    "@oigroup/babel-plugin-lightscript": "^0.5.0",
+    "@oigroup/lightscript-eslint": "^0.5.0",
     "babel-cli": "^6.23.0",
     "babel-plugin-istanbul": "^4.1.1",
     "babel-plugin-transform-class-properties": "^6.23.0",
