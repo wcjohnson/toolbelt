@@ -1,6 +1,6 @@
 {
   "name": "hawks",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "A lightweight bundle of Higher-Order Components (HOCs) for React, in the vein of recompose.",
   "main": "lib/index.js",
   "scripts": {
