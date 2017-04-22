@@ -1,5 +1,10 @@
 {
-  "devDependencies": {
-    "lerna": "2.0.0-beta.38"
+  "scripts": {
+    "rebuild:full": "rimraf node_modules && npm install && npm run rebuild",
+    "rebuild": "lerna clean --yes && lerna bootstrap && lerna run test"
+  },
+  "dependencies": {
+    "lerna": "2.0.0-beta.38",
+    "rimraf": "^2.6.1"
   }
 }
