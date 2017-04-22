@@ -17,3 +17,26 @@ describe 'createBehaviorSubject', ->
 		])
 
 		subj.next(2); subj.next(3); subj.complete()
+
+	it 'onlyWhen', ->
+		subj = createBehaviorSubject()
+
+		subj.next(1)
+
+		test(subj, console.log.bind(console), [
+			(x) -> x is 1
+			(x) -> x is 1
+			'complete'
+			'failure'
+		])
+
+		subj.next(1); subj.complete()
+
+		subj = createBehaviorSubject({onlyWhen: (a,b) -> a isnt b})
+		subj.next(1)
+		test(subj, console.log.bind(console), [
+			(x) -> x is 1
+			'complete'
+			'failure'
+		])
+		subj.next(1); subj.complete()

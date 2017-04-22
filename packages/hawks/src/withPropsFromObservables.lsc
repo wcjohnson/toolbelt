@@ -1,3 +1,5 @@
+// Higher-order component that weaves in the current value of a collection of
+// TC39 Observables into the props of the target component.
 import React from 'react'
 
 unsubscribeFrom(k, subMap, subMapEntry) ->
@@ -49,7 +51,6 @@ export default withPropsFromObservables(mapOfProps, shouldUpdate = truthyFunctio
     unsubscribeAll() ->
       for key k, val currentSub in this._subscriptionMap:
         unsubscribeFrom(k, this._subscriptionMap, currentSub)
-      this._subscriptionMap = {}
 
     componentWillMount() ->
       this.updateFromProps(this.props)
