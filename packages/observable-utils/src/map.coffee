@@ -1,14 +1,12 @@
 import subscribeObserverAdapter from './subscribeObserverAdapter'
 import defineObservable from './defineObservable'
+import transformNext from './transformNext'
 
 export default map = (priorObservable, f) ->
   subscribe = subscribeObserverAdapter((observer) ->
-    priorObservable.subscribe({
-      start: (sub) -> observer.start?(sub)
-      next: (x) -> observer.next?(f(x))
-      error: (err) -> observer.error?(err)
-      complete: -> observer.complete?()
-    })
+    priorObservable.subscribe(
+      transformNext(observer, (x) -> observer.next(f(x)))
+    )
   )
 
   defineObservable({subscribe})
