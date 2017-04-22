@@ -11,15 +11,15 @@ export default toBehaviorSubject = (priorObservable, opts) ->
       if observers.length is 1
         subscription = priorObservable.subscribe({
           next: (val) ->
-            observable.next(val)
+            observable.next?(val)
           error: (e) ->
             subscription?.unsubscribe()
             subscription = undefined
-            observable.error(e)
+            observable.error?(e)
           complete: ->
             subscription?.unsubscribe()
             subscription = undefined
-            observable.complete()
+            observable.complete?()
         })
       return
 

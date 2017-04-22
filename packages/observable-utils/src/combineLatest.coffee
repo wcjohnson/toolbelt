@@ -46,13 +46,13 @@ export default combineLatest = (observables, projection) ->
 			if not values? then return
 			values = null
 			unsubscribeAll()
-			observer.error(err)
+			observer.error?(err)
 
 		# Emit the combined values on the observer.
 		emit = ->
 			# Project; propagate errors caused by projector
 			try result = projection(values) catch err then error(err); return
-			observer.next(result)
+			observer.next?(result)
 
 		# Complete a channel.
 		complete = ->
@@ -60,7 +60,7 @@ export default combineLatest = (observables, projection) ->
 			if (--active is 0)
 				values = null
 				unsubscribeAll()
-				observer.complete()
+				observer.complete?()
 
 		# Subscribe to one upstream object
 		subscribeOne = (index, observable) ->

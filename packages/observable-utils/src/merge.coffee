@@ -18,16 +18,16 @@ export default merge = (observables, observableConstructor) ->
       if active is 0 then return
       active = 0 # Close on error.
       unsubscribeAll()
-      observer.error(err)
+      observer.error?(err)
 
     complete = ->
       if active is 0 then return
       if (--active is 0)
         unsubscribeAll()
-        observer.complete()
+        observer.complete?()
 
     next = (x) ->
-      if active isnt 0 then observer.next(x)
+      if active isnt 0 then observer.next?(x)
 
     subscribeOne = (observable) ->
       subscriptions.push(observable.subscribe({ next, complete, error }))
