@@ -8,8 +8,9 @@ export default memoize = (priorObservable, n = 1) ->
     priorObservable.subscribe(
       transformNext(observer, (x) ->
         memory.unshift(x)
-        observer.next(memory)
+        observerWillSee = memory.slice()
         if memory.length > n then memory.pop()
+        observer.next(observerWillSee)
       )
     )
   )
