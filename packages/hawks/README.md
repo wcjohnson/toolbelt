@@ -4,9 +4,13 @@ A lightweight, cherry-pickable bundle of Higher-Order Components (HOCs) for Reac
 
 ## Notes
 
+### `/lib` cherry-picking convention
+
+All `hawks` components are cherry-pickable with `import Component from 'hawks/lib/component'`.
+
 ### Pure by default
 
-All components produced by `hawks` are "pure-by-default", which is to say they inherit from `React.PureComponent` and will only render if they receive new props or state.
+Most components produced by `hawks` are "pure-by-default", which is to say they inherit from `React.PureComponent` and will only render if they receive new props or state.
 
 ## Components
 
