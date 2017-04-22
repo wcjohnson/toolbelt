@@ -2,9 +2,11 @@
 # only when it is subscribed to.
 import createBehaviorSubject from './createBehaviorSubject'
 
-export default toBehaviorSubject = (priorObservable, f) ->
+export default toBehaviorSubject = (priorObservable, opts) ->
   subscription = undefined
-  observable = createBehaviorSubject({
+  observable = undefined
+
+  sopts = {
     onObserverStarted: (observer, observers) ->
       if observers.length is 1
         subscription = priorObservable.subscribe({
@@ -26,6 +28,10 @@ export default toBehaviorSubject = (priorObservable, f) ->
         subscription?.unsubscribe()
         subscription = undefined
       return
-  })
+  }
+
+  if opts?.onlyWhen then sopts.onlyWhen = opts.onlyWhen
+
+  observable = createBehaviorSubject(sopts)
 
   observable
