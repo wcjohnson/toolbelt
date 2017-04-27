@@ -1,0 +1,17 @@
+// An improved version of recompose withHandlers.
+// The handlers are never regenerated; instead, they receive the latest
+// props as an arg when they are invoked.
+import React from 'react'
+
+export default withConstHandlers(handlers) -> (NextComponent) ->
+  class withConstHandlers extends React.Component:
+    constructor(props) ->
+      super(props)
+      this.handlers = { for key k, val f in handlers:
+        (k, (...args) => f(this.props, ...args))
+      }
+
+    render() ->
+      React.createElement(NextComponent, Object.assign({}, this.props, this.handlers))
+
+  withConstHandlers

@@ -19,17 +19,33 @@ Most components produced by `hawks` are "pure-by-default", which is to say they 
 withConstProps(
   propMap: (initialProps) => {
     [constPropName: string]: [value: any]
+		...
   },
 ): HigherOrderComponent
 ```
 
 Like `withProps`, except the props are created once at component initialization time, and never change throughout the component's lifecycle.
 
+### withConstHandlers
+```js
+withConstHandlers(
+  handlers: {
+    [constPropName: string]: [handler: function(props, ...args)]
+		...
+  }
+): HigherOrderComponent
+```
+
+`recompose`'s `withHandlers` implementation regenerates the `handlers` whenever the incoming props change, largely defeating the performance optimizations that `withHandlers` is supposed to provide when used with pure rendering.
+
+`withConstHandlers` generates truly-constant handler functions that never change throughout the component lifecycle. Instead of obtaining props from an ever-changing closure, the handler function is passed the `props` at the time of handler execution as its first argument. The remaining arguments from the called handler are spread to the inner handler as well.
+
 ### withPropsFromObservables
 ```js
 withPropsFromObservables(
   propsToObservableMap: (initialProps) => {
     [valuePropName: string]: [observable: Observable]
+		...
   },
   shouldUpdate?: (nextProps, currentProps) => boolean
 ): HigherOrderComponent
