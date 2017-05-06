@@ -9,8 +9,7 @@ unsubscribeFrom(k, subMap, subMapEntry) ->
 subscribeTo(k, subMap, observable, component) ->
   if not observable: return
   subscription = observable.subscribe({
-    next: (value) ->
-      d = {}; d[k] = value; component.setState(d)
+    next: (value) -> component.setState({ [k]: value })
   })
   subMap[k] = [ observable, subscription ]
 
