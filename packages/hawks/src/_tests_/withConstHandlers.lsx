@@ -1,0 +1,22 @@
+import React from 'react'
+import renderer from 'react-test-renderer'
+
+import { expect } from 'chai'
+import withConstHandlers from '../withConstHandlers'
+
+describe('withConstHandlers', ->
+  it('should work', ->
+    Comp = withConstHandlers({
+      test: (props) ->
+        console.log(props)
+        expect(props.value).to.equal(1)
+    })((props) ->
+      <button onClick={props.test}>Test</button>
+    )
+
+    rendered = renderer.create(<Comp value={1} />)
+    tree = rendered.toJSON()
+    tree.props.onClick()
+    console.log(rendered.toJSON())
+  )
+)

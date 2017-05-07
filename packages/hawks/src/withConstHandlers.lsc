@@ -2,6 +2,7 @@
 // The handlers are never regenerated; instead, they receive the latest
 // props as an arg when they are invoked.
 import React from 'react'
+{ assign } = Object
 
 export default withConstHandlers(handlers) -> (NextComponent) ->
   class withConstHandlers extends React.Component:
@@ -12,6 +13,6 @@ export default withConstHandlers(handlers) -> (NextComponent) ->
       }
 
     render() ->
-      React.createElement(NextComponent, Object.assign({}, this.props, this.handlers))
+      React.createElement(NextComponent, {}~assign(this.props, this.handlers))
 
   withConstHandlers
