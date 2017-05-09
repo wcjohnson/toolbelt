@@ -1,0 +1,40 @@
+// Canvas for zooming/cropping/rotating image
+import React from 'react'
+import ReactDOM from 'react-dom'
+import sizeMe from 'react-sizeme'
+
+Canvas = sizeMe({
+  monitorWidth: true
+  monitorHeight: true
+  noPlaceholder: true
+})(class extends React.PureComponent:
+  componentDidUpdate() ->
+    canvas = this.canvas
+    if not canvas: return
+
+    { width, height } = this.props.size or { width: 1, height: 1 }
+    if canvas.width != width or canvas.height != height:
+      canvas.width = width
+      canvas.height = height
+      if this.props.onSizeChanged: this.props.onSizeChanged(width, height)
+
+    context = ReactDOM.findDOMNode(canvas).getContext('2d')
+    context.setTransform(1, 0, 0, 1, 0, 0)
+    context.clearRect(0, 0, width, height)
+
+    // Normalized coordinates
+    layer = this.props.draw?.layer
+    if layer:
+      layer.doPaint(context.canvas, context)
+
+  refCanvas(canvas) =>
+    this.canvas = canvas
+
+  render() ->
+    passedProps = Object.assign({}, this.props)
+    delete passedProps.draw
+    delete passedProps.onSizeChanged
+    <canvas ref={this.refCanvas} {...passedProps} />
+)
+
+export default Canvas

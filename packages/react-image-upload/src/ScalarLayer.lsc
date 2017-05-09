@@ -1,0 +1,50 @@
+import mat2d from './math/mat2d'
+import Layer from './Layer'
+
+export default class ScalarLayer extends Layer:
+  constructor() ->
+    super()
+    this.reset()
+
+  reset() ->
+    this.dx = null
+    this.sx = null
+    this.theta = null
+
+  translate(dx, dy) ->
+    this.dx = dx
+    this.dy = dy
+
+  rotate(rad) ->
+    this.theta = rad
+
+  scale(sx, sy) ->
+    this.sx = sx
+    this.sy = sy
+
+  updateTransform() ->
+    matrix = this.matrix
+    mat2d.identity(matrix)
+    if this.dx != null: mat2d.translate(matrix, matrix, [this.dx, this.dy])
+    if this.theta != null: mat2d.rotate(matrix, matrix, this.theta)
+    if this.sx != null: mat2d.scale(matrix, matrix, [this.sx, this.sy])
+
+  doPaint(canvas, context) ->
+    this.willPaint(canvas, context)
+    this.paint(canvas, context)
+    this.didPaint(canvas, context)
+
+  willPaint(canvas, context) ->
+    context.save()
+    this.updateTransform()
+
+    context.transform.apply(context, this.matrix)
+    if this.children:
+      for elem e in this.children:
+        e.parent = this
+        e.doPaint(canvas, context)
+
+  paint(canvas, context) ->
+
+  didPaint(canvas, context) ->
+    context.restore()

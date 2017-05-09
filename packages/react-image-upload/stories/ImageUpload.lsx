@@ -1,0 +1,92 @@
+import cloneDeep from 'lodash/cloneDeep'
+
+import React from 'react'
+import ReactDOM from 'react-dom'
+
+import compose from 'recompose/compose'
+import withState from 'recompose/withState'
+import withConstHandlers from 'hawks/lib/withConstHandlers'
+import withConstProps from 'hawks/lib/withConstProps'
+
+import DropTarget from '../src/DropTarget'
+import Canvas from '../src/Canvas'
+import Uploader from '../src/Uploader'
+import Layer from '../src/Layer'
+import ImageLayer from '../src/ImageLayer'
+
+ImageTest = compose(
+  withConstProps(->
+    rootLayer = new Layer()
+    imageLayer = new ImageLayer()
+    rootLayer.pushChild(imageLayer)
+    { rootLayer, imageLayer }
+  )
+  withState('draw', 'setDraw', null)
+  withState('outputCanvas', 'setOutputCanvas', null)
+  withConstHandlers({
+    onSizeChanged: (props, dx, dy) ->
+      props.rootLayer.setAspect(dx, dy)
+
+    handleImage: (props, img) ->
+      props.imageLayer.setImage(img)
+      props.imageLayer.fit()
+
+      props.setDraw({layer: props.rootLayer})
+
+    rotateRight: (props) ->
+      layer = props.imageLayer
+      layer.rotate(layer.theta + Math.PI/2)
+      layer.fit()
+      props.setDraw({layer: props.rootLayer})
+
+    rotateLeft: (props) ->
+      layer = props.imageLayer
+      layer.rotate(layer.theta - Math.PI/2)
+      layer.fit()
+      props.setDraw({layer: props.rootLayer})
+
+    makeFinalImage: (props) ->
+      { rootLayer, imageLayer, outputCanvas } = props
+      outCanvas = ReactDOM.findDOMNode(outputCanvas)
+
+      // Get actual size of image after rotation etc
+      vec = imageLayer.getTransformedBoxDimensions()
+      dx = vec[0]
+      dy = vec[1]
+      outAspect = dx/dy
+
+      // Fit into final box
+      [ width, height ] = Layer.fitAspect(1024, 768, outAspect)
+      outCanvas.width = width
+      outCanvas.height = height
+
+      // Make new layer structure and retransform
+      newRootLayer = cloneDeep(rootLayer)
+      newRootLayer.setAspect(outCanvas.width, outCanvas.height)
+      newRootLayer.children[0].fit()
+
+      // Render to final canvas
+      context = outCanvas.getContext('2d')
+      context.setTransform(1, 0, 0, 1, 0, 0)
+      context.clearRect(0, 0, outCanvas.width, outCanvas.height)
+      newRootLayer.doPaint(outCanvas, context)
+  })
+)((props) ->
+  <div>
+    <div style={{position: 'relative', width: props.width, height: props.height}}>
+      <div style={{position:'absolute', width: '100%', height: '100%', backgroundColor:'#AAA', zIndex: 1}}>
+        Uploader Area<br />
+        Click or drop image files here
+      </div>
+      <Canvas style={{position:'absolute', width: '100%', height: '100%', zIndex: 2}} draw={props.draw} onSizeChanged={props.onSizeChanged}/>
+      <DropTarget style={{position:'absolute', width: '100%', height: '100%', zIndex: 3}} onImage={props.handleImage} />
+    </div>
+    <button onClick={props.rotateRight}>Rotate Right</button>
+    <button onClick={props.rotateLeft}>Rotate Left</button>
+    <button onClick={props.makeFinalImage}>Make Final Image</button>
+    <div>Output canvas: {props.outputCanvas?.width} x {props.outputCanvas?.height}</div>
+    <canvas ref={props.setOutputCanvas} />
+  </div>
+)
+
+export { ImageTest }

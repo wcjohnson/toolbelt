@@ -1,0 +1,88 @@
+// Div onto which an image can be dropped, or uploaded by clicking and picking
+// from the local image store.
+import React from 'react'
+import ReactDOM from 'react-dom'
+import PropTypes from 'prop-types'
+import { deviceEvents } from './events'
+
+isDataURL(str) ->
+  if (str === null) {
+    return false
+  }
+  const regex = /^\s*data:/i
+  return regex.test(str)
+
+export default class DropTarget extends React.PureComponent:
+  static propTypes = {
+    crossOrigin: PropTypes.oneOf(['', 'anonymous', 'use-credentials'])
+    onLoadFailure: PropTypes.func
+    onImage: PropTypes.func
+  }
+
+  static defaultProps = {
+    onLoadFailure: ->
+    onImage: ->
+  }
+
+  constructor(props) ->
+    super(props)
+
+  loadImage(imageURL) =>
+    // eslint-disable-next-line no-undef
+    const imageObj = new Image()
+    imageObj.onload = this.handleImageReady.bind(this, imageObj)
+    imageObj.onerror = this.props.onLoadFailure
+    if !isDataURL(imageURL) && this.props.crossOrigin:
+      imageObj.crossOrigin = this.props.crossOrigin
+    imageObj.src = imageURL
+
+  readFile(file) ->
+    // eslint-disable-next-line no-undef
+    const reader = new FileReader()
+    reader.onload = (e) => this.loadImage(e.target.result)
+    reader.readAsDataURL(file)
+
+  handleImageReady(img) =>
+    this.props.onImage(img)
+
+  handleDragOver(e) ->
+    // eslint-disable-next-line no-undef
+    now e = e or window.event
+    e.preventDefault()
+
+  handleDrop(e) =>
+    // eslint-disable-next-line no-undef
+    now e = e or window.event
+    e.stopPropagation()
+    e.preventDefault()
+
+    if e.dataTransfer && e.dataTransfer.files.length:
+      this.readFile(e.dataTransfer.files[0])
+
+  handleInputChange(e) =>
+    // eslint-disable-next-line no-undef
+    now e = e or window.event
+    e.stopPropagation()
+    e.preventDefault()
+
+    if e.target.files && e.target.files.length:
+      this.readFile(e.target.files[0])
+
+  handleClick() =>
+    this.inputDOMNode?.click()
+
+  refInput(x) =>
+    this.input = x
+    if x: this.inputDOMNode = ReactDOM.findDOMNode(x) else: this.inputDOMNode = null
+
+  render() ->
+    passedProps = Object.assign({}, this.props)
+
+    passedProps[deviceEvents.react.drag] = this.handleDragOver
+    passedProps[deviceEvents.react.drop] = this.handleDrop
+    passedProps["onTouchTap"] = this.handleClick
+
+    <div {...passedProps}>
+      <input ref={this.refInput} type="file" accept="image/*" style={{display: 'none'}} onChange={this.handleInputChange} />
+      {this.props.children}
+    </div>

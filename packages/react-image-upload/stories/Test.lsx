@@ -1,0 +1,6 @@
+import React from 'react'
+
+export default Test({text}) ->
+  <div>
+    Test: {text}
+  </div>

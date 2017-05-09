@@ -1,0 +1,33 @@
+export default createBlobFromDataURL(dataURI) ->
+  // Convert base64/URLEncoded data component to raw binary data held in a string
+  splitString = dataURI.split(',');
+  splitStringMime = splitString[0];
+  splitStringData = splitString[1];
+
+  var byteString;
+  if (splitStringMime.indexOf('base64') >= 0) {
+    now byteString = atob(splitStringData);
+  } else {
+    now byteString = decodeURIComponent(splitStringData);
+  }
+
+  // separate out the mime component
+  var mimeString = splitStringMime.split(':')[1].split(';')[0];
+
+  // Write the bytes of the string to an ArrayBuffer
+  var length = byteString.length;
+  var buf = new ArrayBuffer(length);
+  var view = new Uint8Array(buf);
+  for (var i = 0; i < length; i++) {
+    view[i] = byteString.charCodeAt(i);
+  }
+
+  // Detect if Blob object is supported.
+  if (typeof Blob !== 'undefined') {
+    return new Blob([buf], {type: mimeString});
+  } else {
+    theBlobBuilder = window.BlobBuilder || window.WebKitBlobBuilder || window.MozBlobBuilder || window.MSBlobBuilder;
+    var bb = new theBlobBuilder();
+    bb.append(buf);
+    return bb.getBlob(mimeString);
+  }

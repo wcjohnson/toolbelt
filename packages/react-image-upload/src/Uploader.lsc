@@ -1,0 +1,58 @@
+// Upload stuff to a place
+import createBlobFromDataURL from './createBlobFromDataURL'
+import createBehaviorSubject from 'observable-utils/lib/createBehaviorSubject'
+
+// Default XHR timeout; can be overridden by setting Uploader.timeout
+TIMEOUT = 30000
+
+export default class Uploader:
+  constructor(url, method = 'POST', uploadMimeType = 'image/jpeg', uploadQuality = 0.95) ->
+    this.url = url
+    this.method = method
+    this.uploadMimeType = uploadMimeType
+    this.uploadQuality = uploadQuality
+    this.state$ = createBehaviorSubject()
+    this.setState({uploader: this, state: 'NONE'})
+
+  setState(state) ->
+    this.state = Object.assign({}, this.state, state)
+    this.state$.next(this.state)
+
+  failed(err) ->
+    this.setState({ state: 'FAILED', error: err })
+
+  succeeded() ->
+    this.setState({ state: 'SUCCEEDED' })
+
+  uploadBlob(blob) =>
+    xhr = new XMLHttpRequest()
+
+    xhr.open(this.method, this.url, true)
+    xhr.timeout = this.timeout or TIMEOUT
+
+    xhr.ontimeout = () =>
+      this.failed(new Error("timeout"))
+
+    xhr.upload.onprogress = (e) =>
+      if e.lengthComputable:
+        percentComplete = Math.round((e.loaded / e.total) * 100)
+        this.setState({ percentComplete, loaded: e.loaded, total: e.total })
+
+    xhr.onreadystatechange = () =>
+      if xhr.readyState == xhr.DONE:
+        if xhr.status == 200:
+          this.succeeded()
+        else:
+          this.failed(new Error(`status ${xhr.status}`))
+
+    xhr.send(blob)
+    this.setState({state: 'UPLOADING'})
+
+  uploadFromCanvas(canvas) ->
+    if canvas.toBlob:
+      this.setState({state: 'CONVERTING'})
+      canvas.toBlob(this.uploadBlob, this.uploadMimeType, this.uploadQuality)
+    else:
+      // Some WebKit browsers don't support toBlob
+      durl = canvas.toDataURL(this.uploadMimeType, this.uploadQuality)
+      this.uploadBlob(createBlobFromDataURL(durl))
