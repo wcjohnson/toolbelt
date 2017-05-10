@@ -33,6 +33,10 @@ ImageTest = compose(
 
       props.setDraw({layer: props.rootLayer})
 
+    clearImage: (props) ->
+      props.imageLayer.setImage(null)
+      props.setDraw({layer: props.rootLayer})
+
     rotateRight: (props) ->
       layer = props.imageLayer
       layer.rotate(layer.theta + Math.PI/2)
@@ -72,18 +76,26 @@ ImageTest = compose(
       newRootLayer.doPaint(outCanvas, context)
   })
 )((props) ->
+  hasImage = !!(props.imageLayer.getImage())
   <div>
     <div style={{position: 'relative', width: props.width, height: props.height}}>
-      <div style={{position:'absolute', width: '100%', height: '100%', backgroundColor:'#AAA', zIndex: 1}}>
-        Uploader Area<br />
-        Click or drop image files here
-      </div>
+      { if not hasImage:
+        <div style={{position:'absolute', width: '100%', height: '100%', backgroundColor:'#AAA', zIndex: 1}}>
+          Uploader Area<br />
+          Click or drop image files here
+        </div>
+      }
       <Canvas style={{position:'absolute', width: '100%', height: '100%', zIndex: 2}} draw={props.draw} onSizeChanged={props.onSizeChanged}/>
-      <DropTarget style={{position:'absolute', width: '100%', height: '100%', zIndex: 3}} onImage={props.handleImage} />
+      <DropTarget style={{position:'absolute', width: '100%', height: '100%', zIndex: 3}} onImage={props.handleImage} disableClick={hasImage} />
     </div>
-    <button onClick={props.rotateRight}>Rotate Right</button>
-    <button onClick={props.rotateLeft}>Rotate Left</button>
-    <button onClick={props.makeFinalImage}>Make Final Image</button>
+    { if hasImage:
+        <div>
+          <button onClick={props.rotateRight}>Rotate Right</button>
+          <button onClick={props.rotateLeft}>Rotate Left</button>
+          <button onClick={props.makeFinalImage}>Make Final Image</button>
+          <button onClick={props.clearImage}>Clear Image</button>
+        </div>
+    }
     <div>Output canvas: {props.outputCanvas?.width} x {props.outputCanvas?.height}</div>
     <canvas ref={props.setOutputCanvas} />
   </div>
