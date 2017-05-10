@@ -2,7 +2,6 @@ import React from 'react';
 import { storiesOf, action, linkTo } from '@kadira/storybook';
 import Button from './Button';
 import Welcome from './Welcome';
-import Test from './Test';
 import { ImageTest } from './ImageUpload'
 
 var injectTapEventPlugin = require('react-tap-event-plugin');
@@ -20,11 +19,6 @@ storiesOf('Button', module)
   .add('with some emoji', () => (
     <Button onClick={action('clicked')}>😀 😎 👍 💯</Button>
   ));
-
-storiesOf('Test', module)
-  .add('foolishness', () => (
-    <Test text="testing" />
-  ))
 
 storiesOf('ImageUpload', module)
   .add('uploader', () => (
