@@ -1,0 +1,31 @@
+// Load an image from a file or URL and create a corresponding HTML5 `img`
+// element.
+
+isDataURL(str) ->
+  if (str === null) {
+    return false
+  }
+  const regex = /^\s*data:/i
+  return regex.test(str)
+
+export default class ImageLoader:
+  constructor(onLoad, onError, crossOrigin) ->
+    this.onLoad = onLoad
+    this.onError = onError
+    this.crossOrigin = crossOrigin
+
+  loadImage(imageURL) ->
+    // eslint-disable-next-line no-undef
+    const imageObj = new Image()
+    const onLoad = this.onLoad
+    imageObj.onload = -> onLoad(imageObj)
+    imageObj.onerror = this.onError
+    if !isDataURL(imageURL) && this.crossOrigin:
+      imageObj.crossOrigin = this.crossOrigin
+    imageObj.src = imageURL
+
+  readFile(file) ->
+    // eslint-disable-next-line no-undef
+    const reader = new FileReader()
+    reader.onload = (e) => this.loadImage(e.target.result)
+    reader.readAsDataURL(file)

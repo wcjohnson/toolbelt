@@ -3,7 +3,8 @@ import ScalarLayer from './ScalarLayer'
 export default class ImageLayer extends ScalarLayer:
   setImage(image) ->
     this.image = image
-    aspect = image.width / image.height
+    aspect = if image: image.width / image.height else: 1
+
     this.aspect = aspect
 
     this.reset()
@@ -11,6 +12,8 @@ export default class ImageLayer extends ScalarLayer:
     this.rotate(0)
 
     this
+
+  getImage() -> this.image
 
   getTransformedBoxDimensions() ->
     super.getTransformedBoxDimensions(-0.5, -0.5, 0.5, 0.5)

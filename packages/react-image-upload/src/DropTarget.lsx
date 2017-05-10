@@ -3,44 +3,28 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
 import PropTypes from 'prop-types'
-import { deviceEvents } from './events'
 
-isDataURL(str) ->
-  if (str === null) {
-    return false
-  }
-  const regex = /^\s*data:/i
-  return regex.test(str)
+import { deviceEvents } from './events'
+import ImageLoader from './ImageLoader'
 
 export default class DropTarget extends React.PureComponent:
   static propTypes = {
     crossOrigin: PropTypes.oneOf(['', 'anonymous', 'use-credentials'])
-    onLoadFailure: PropTypes.func
+    onError: PropTypes.func
     onImage: PropTypes.func
+    disableDrop: PropTypes.bool
+    disableClick: PropTypes.bool
+    clickEvent: PropTypes.string
   }
 
   static defaultProps = {
-    onLoadFailure: ->
+    onError: ->
     onImage: ->
+    clickEvent: 'onClick'
   }
 
   constructor(props) ->
     super(props)
-
-  loadImage(imageURL) =>
-    // eslint-disable-next-line no-undef
-    const imageObj = new Image()
-    imageObj.onload = this.handleImageReady.bind(this, imageObj)
-    imageObj.onerror = this.props.onLoadFailure
-    if !isDataURL(imageURL) && this.props.crossOrigin:
-      imageObj.crossOrigin = this.props.crossOrigin
-    imageObj.src = imageURL
-
-  readFile(file) ->
-    // eslint-disable-next-line no-undef
-    const reader = new FileReader()
-    reader.onload = (e) => this.loadImage(e.target.result)
-    reader.readAsDataURL(file)
 
   handleImageReady(img) =>
     this.props.onImage(img)
@@ -56,33 +40,43 @@ export default class DropTarget extends React.PureComponent:
     e.stopPropagation()
     e.preventDefault()
 
-    if e.dataTransfer && e.dataTransfer.files.length:
-      this.readFile(e.dataTransfer.files[0])
+    files = if e.dataTransfer:
+      e.dataTransfer.files
+    else if e.target:
+      e.target.files
+    else:
+      []
 
-  handleInputChange(e) =>
-    // eslint-disable-next-line no-undef
-    now e = e or window.event
-    e.stopPropagation()
-    e.preventDefault()
-
-    if e.target.files && e.target.files.length:
-      this.readFile(e.target.files[0])
+    if files && files.length:
+      loader = new ImageLoader(this.handleImageReady, null, this.props.crossOrigin)
+      loader.readFile(files[0])
 
   handleClick() =>
     this.inputDOMNode?.click()
 
   refInput(x) =>
     this.input = x
-    if x: this.inputDOMNode = ReactDOM.findDOMNode(x) else: this.inputDOMNode = null
+    this.inputDOMNode = if x: ReactDOM.findDOMNode(x) else: null
 
   render() ->
     passedProps = Object.assign({}, this.props)
 
-    passedProps[deviceEvents.react.drag] = this.handleDragOver
-    passedProps[deviceEvents.react.drop] = this.handleDrop
-    passedProps["onTouchTap"] = this.handleClick
+    if not this.props.disableDrop:
+      passedProps[deviceEvents.react.drag] = this.handleDragOver
+      passedProps[deviceEvents.react.drop] = this.handleDrop
+
+    if not this.props.disableClick:
+      passedProps[this.props.clickEvent] = this.handleClick
+
+    delete passedProps.onImage
+    delete passedProps.onError
+    delete passedProps.disableDrop
+    delete passedProps.disableClick
+    delete passedProps.clickEvent
 
     <div {...passedProps}>
-      <input ref={this.refInput} type="file" accept="image/*" style={{display: 'none'}} onChange={this.handleInputChange} />
+      { if not this.props.disableClick:
+        <input ref={this.refInput} type="file" accept="image/*" style={{display: 'none'}} onChange={this.handleDrop} />
+      }
       {this.props.children}
     </div>
