@@ -1,3 +1,0 @@
-// Place a node at a location.
-export default placeAtLoc(newNode, loc) ->
-  Object.assign(newNode, loc)
