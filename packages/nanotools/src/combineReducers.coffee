@@ -1,5 +1,5 @@
 # A version of Redux's combineReducers that doesn't complain about state shape.
-export default combineReducers = (reducers) ->
+export default combineReducers = (reducers, didDropKeys) ->
 	finalReducers = {}
 	for k, v of reducers
 		if typeof(v) isnt 'function'
@@ -19,7 +19,7 @@ export default combineReducers = (reducers) ->
 			hasChanged = hasChanged || ( nextStateForKey isnt previousStateForKey )
 
 		# Detect deletion of components from the reducer map
-		if not hasChanged
+		if (not hasChanged) and didDropKeys
 			for key of state
 				if not (key of finalReducers) then hasChanged = true; break
 
