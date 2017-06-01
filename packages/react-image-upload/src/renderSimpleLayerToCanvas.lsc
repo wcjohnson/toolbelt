@@ -1,0 +1,33 @@
+import Layer from './Layer'
+import cloneDeep from 'lodash/cloneDeep'
+
+// Create a new HTML Canvas and render a "simple" layer to it. A simple
+// layer stack consists of a root layer with one child Image layer.
+export default renderSimpleLayerToCanvas(rootLayer, targetWidth, targetHeight) ->
+  imageLayer = rootLayer.children[0]
+
+  // Generate output canvas
+  // eslint-disable-next-line no-undef
+  outCanvas = document.createElement('canvas')
+
+  // Get actual size of image after rotation etc
+  [ dx, dy ] = imageLayer.getTransformedBoxDimensions()
+  outAspect = dx/dy
+
+  // Best-fit to desired output box
+  [ width, height ] = Layer.fitAspect(targetWidth, targetHeight, outAspect)
+  outCanvas.width = width
+  outCanvas.height = height
+
+  // Make new layer structure and retransform
+  newRootLayer = cloneDeep(rootLayer)
+  newRootLayer.setAspect(width, height)
+  newRootLayer.children[0].fit()
+
+  // Render to final canvas
+  context = outCanvas.getContext('2d')
+  context.setTransform(1, 0, 0, 1, 0, 0)
+  context.clearRect(0, 0, width, height)
+  newRootLayer.doPaint(outCanvas, context)
+
+  outCanvas

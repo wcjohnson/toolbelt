@@ -20,11 +20,20 @@ export default class Uploader:
 
   failed(err) ->
     this.setState({ state: 'FAILED', error: err })
+    this.reject?(err)
 
   succeeded() ->
     this.setState({ state: 'SUCCEEDED' })
+    this.resolve?(this)
+
+  getPromise(promiseConstructor = Promise) ->
+    new promiseConstructor((resolve, reject) =>
+      this.resolve = resolve
+      this.reject = reject
+    )
 
   uploadBlob(blob) =>
+    // eslint-disable-next-line no-undef
     xhr = new XMLHttpRequest()
 
     xhr.open(this.method, this.url, true)
@@ -46,7 +55,7 @@ export default class Uploader:
           this.failed(new Error(`status ${xhr.status}`))
 
     xhr.send(blob)
-    this.setState({state: 'UPLOADING'})
+    this.setState({state: 'UPLOADING', percentComplete: 0})
 
   uploadFromCanvas(canvas) ->
     if canvas.toBlob:

@@ -29,11 +29,6 @@ export default class ScalarLayer extends Layer:
     if this.theta != null: mat2d.rotate(matrix, matrix, this.theta)
     if this.sx != null: mat2d.scale(matrix, matrix, [this.sx, this.sy])
 
-  doPaint(canvas, context) ->
-    this.willPaint(canvas, context)
-    this.paint(canvas, context)
-    this.didPaint(canvas, context)
-
   willPaint(canvas, context) ->
     context.save()
     this.updateTransform()
@@ -43,8 +38,3 @@ export default class ScalarLayer extends Layer:
       for elem e in this.children:
         e.parent = this
         e.doPaint(canvas, context)
-
-  paint(canvas, context) ->
-
-  didPaint(canvas, context) ->
-    context.restore()
