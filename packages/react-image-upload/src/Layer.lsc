@@ -91,7 +91,7 @@ export default class Layer:
         e.parent = this
         e.doPaint(canvas, context)
 
-  paint(canvas, context) ->
+  paint(canvas, context) -> return
 
   didPaint(canvas, context) ->
     context.restore()

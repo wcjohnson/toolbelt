@@ -1,7 +1,6 @@
 // Div onto which an image can be dropped, or uploaded by clicking and picking
 // from the local image store.
 import React from 'react'
-import ReactDOM from 'react-dom'
 import PropTypes from 'prop-types'
 
 import { deviceEvents } from './events'
@@ -18,8 +17,8 @@ export default class DropTarget extends React.PureComponent:
   }
 
   static defaultProps = {
-    onError: ->
-    onImage: ->
+    onError: -> return
+    onImage: -> return
     clickEvent: 'onClick'
   }
 
@@ -52,11 +51,10 @@ export default class DropTarget extends React.PureComponent:
       loader.readFile(files[0])
 
   handleClick() =>
-    this.inputDOMNode?.click()
+    this.input?.click()
 
   refInput(x) =>
     this.input = x
-    this.inputDOMNode = if x: ReactDOM.findDOMNode(x) else: null
 
   render() ->
     passedProps = Object.assign({}, this.props)

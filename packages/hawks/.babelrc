@@ -1,26 +1,46 @@
 {
   "plugins": [
-    ["@oigroup/babel-plugin-lightscript"],
-    ["transform-class-properties"],
-    ["transform-decorators-legacy"],
     ["transform-runtime"]
   ],
   "presets": [
-    "react",
-    ["env", {
-      "targets": {
-        "ie": 10
+    [
+      "@oigroup/babel-preset-lightscript",
+      {
+        "env": {
+          "targets": {
+            "ie": 10
+          }
+        },
+        "noEnforcedSubscriptIndentation": true,
+        "bangCall": true,
+        "safeCall": true,
+        "existential": true,
+        "enhancedComprehension": true
       }
-    }]
+    ]
   ],
   "env": {
     "istanbul": {
       "plugins": [
-        ["@oigroup/babel-plugin-lightscript"],
-        ["transform-class-properties"],
-        ["transform-decorators-legacy"],
         ["transform-runtime"],
         ["istanbul"]
+      ],
+      "presets": [
+        [
+          "@oigroup/babel-preset-lightscript",
+          {
+            "env": {
+              "targets": {
+                "ie": 10
+              }
+            },
+            "noEnforcedSubscriptIndentation": true,
+            "bangCall": true,
+            "safeCall": true,
+            "existential": true,
+            "enhancedComprehension": true
+          }
+        ]
       ]
     }
   }

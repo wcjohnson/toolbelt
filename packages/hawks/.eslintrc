@@ -1,19 +1,25 @@
 {
   "parser": "@oigroup/lightscript-eslint",
-	"rules": {
-		"linebreak-style": [
-			2,
-			"unix"
-		],
+  "plugins": [
+    "react"
+  ],
+  "rules": {
+    "linebreak-style": [
+      2,
+      "unix"
+    ],
     "no-console": 0,
-    "no-extra-semi": 0
-	},
-  "parserOptions": {
-		"sourceType": "module"
-	},
-  "env": {
-    "mocha": true,
-    "node": true
+    "react/prop-types": 0
   },
-	"extends": "eslint:recommended"
+  "parserOptions": {
+    "sourceType": "module"
+  },
+  "env": {
+    "shared-node-browser": true,
+    "mocha": true
+  },
+  "extends": [
+    "eslint:recommended",
+    "plugin:react/recommended"
+  ]
 }
