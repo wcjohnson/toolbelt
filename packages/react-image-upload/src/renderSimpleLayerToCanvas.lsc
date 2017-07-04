@@ -5,14 +5,23 @@ import cloneDeep from 'lodash/cloneDeep'
 // layer stack consists of a root layer with one child Image layer.
 export default renderSimpleLayerToCanvas(rootLayer, targetWidth, targetHeight) ->
   imageLayer = rootLayer.children[0]
+  image = imageLayer.getImage()
 
   // Generate output canvas
-  // eslint-disable-next-line no-undef
   outCanvas = document.createElement('canvas')
 
   // Get actual size of image after rotation etc
   [ dx, dy ] = imageLayer.getTransformedBoxDimensions()
   outAspect = dx/dy
+
+  // If no target dimensions were provided, use dimensions of whole image
+  if (not targetWidth) or (not targetHeight):
+    if outAspect > 1:
+      now targetWidth = Math.max(image.width, image.height)
+      now targetHeight = Math.min(image.width, image.height)
+    else:
+      now targetWidth = Math.min(image.width, image.height)
+      now targetHeight = Math.max(image.width, image.height)
 
   // Best-fit to desired output box
   [ width, height ] = Layer.fitAspect(targetWidth, targetHeight, outAspect)
