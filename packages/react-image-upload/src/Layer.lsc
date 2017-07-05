@@ -1,4 +1,5 @@
 import mat2d from './math/mat2d'
+import { EPSILON } from './math/common'
 
 export default class Layer:
   constructor() ->
@@ -28,10 +29,12 @@ export default class Layer:
     [ dx, dy ] = this.getTransformedBoxDimensions(left, top, right, bottom)
     // Scale to shortest parent dimeinsion
     let scale = 1
-    if dy > this.parent.height: now scale = Math.min(scale, this.parent.height/dy)
-    if dx > this.parent.width: now scale = Math.min(scale, this.parent.width/dx)
+    if dy > this.parent.height + EPSILON: now scale = Math.min(scale, this.parent.height/dy)
+    if dx > this.parent.width + EPSILON: now scale = Math.min(scale, this.parent.width/dx)
     // If not scale down, scale up
-    if scale == 1:
+    if (scale == 1)
+    and (dx < this.parent.width - EPSILON)
+    and (dy < this.parent.height - EPSILON):
       if this.parent.height < this.parent.width:
         now scale = this.parent.height/dy
       else:

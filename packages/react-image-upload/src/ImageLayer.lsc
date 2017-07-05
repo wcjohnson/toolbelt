@@ -24,6 +24,8 @@ export default class ImageLayer extends ScalarLayer:
     this.scale(this.aspect, 1)
     this.updateTransform()
 
+    if not this.image: return this
+
     this.fitBoxToParent(-0.5, -0.5, 0.5, 0.5)
     this
 
