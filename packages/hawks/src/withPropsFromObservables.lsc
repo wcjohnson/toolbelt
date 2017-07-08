@@ -16,7 +16,7 @@ subscribeTo(k, subMap, observable, component) ->
 truthyFunction() -> true
 
 export default withPropsFromObservables(mapOfProps, shouldUpdate = truthyFunction) -> (NextComponent) ->
-  class withPropsFromObservables extends React.PureComponent:
+  class withPropsFromObservables extends React.Component:
     constructor(props) ->
       super(props)
       this.state = {}
