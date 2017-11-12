@@ -4,6 +4,7 @@ import createSubject from './createSubject'
 export default createBehaviorSubject = (opts) ->
 	nexted = false
 	presentValue = undefined
+	if 'initialValue' of opts then presentValue = opts.initialValue
 
 	# Create the subject observable
 	observable = createSubject(opts)
