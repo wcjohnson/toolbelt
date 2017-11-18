@@ -5,7 +5,6 @@
   "description": "Utilities for drag-drop image uploading in React.",
   "main": "lib/index.js",
   "scripts": {
-    "prepublish": "npm run clean && npm run build",
     "clean": "rimraf lib build",
     "build:babel:base": "babel -x \".js\",\".jsx\",\".lsc\",\".lsx\"",
     "build:babel:commonjs": "mkdirp lib && cross-env BABEL_ENV=commonjs npm run build:babel:base -- src --out-dir lib",

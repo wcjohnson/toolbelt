@@ -3,7 +3,6 @@
   "version": "0.1.8",
   "description": "Small, fast, bundle-efficient utilities for general JavaScript.",
   "scripts": {
-    "prepublish": "npm run clean && npm run build",
     "clean": "rimraf lib build",
     "build:coffee": "mkdirp build/coffee && coffee --compile --output build/coffee/ src/",
     "build:babel:commonjs": "mkdirp lib && cross-env BABEL_ENV=commonjs babel build/coffee --out-dir lib",

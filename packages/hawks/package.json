@@ -4,7 +4,6 @@
   "description": "A lightweight bundle of Higher-Order Components (HOCs) for React, in the vein of recompose.",
   "main": "lib/index.js",
   "scripts": {
-    "prepublish": "npm run clean && npm run build",
     "clean": "rimraf lib",
     "build:babel:base": "babel -x \".js\",\".jsx\",\".lsc\",\".lsx\"",
     "build:babel:commonjs": "mkdirp lib && cross-env BABEL_ENV=commonjs npm run build:babel:base -- src --out-dir lib",
