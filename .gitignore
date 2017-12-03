@@ -4,3 +4,4 @@ lib/
 lerna-debug.log
 npm-debug.log
 package-lock.json
+.DS_Store
