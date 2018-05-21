@@ -25,8 +25,8 @@ export default class DropTarget extends React.PureComponent:
   constructor(props) ->
     super(props)
 
-  handleImageReady(img) =>
-    this.props.onImage(img)
+  handleImageReady(img, file) =>
+    this.props.onImage(img, file.type, file)
 
   handleDragOver(e) ->
     // eslint-disable-next-line no-undef
@@ -47,10 +47,11 @@ export default class DropTarget extends React.PureComponent:
       []
 
     if files && files.length:
-      loader = new ImageLoader(this.handleImageReady, null, this.props.crossOrigin)
-      loader.readFile(files[0])
+      file = files[0]
+      loader = new ImageLoader(this.handleImageReady, null, this.props.crossOrigin, file)
+      loader.readFile(file)
 
-  handleClick() =>
+  handleClick(r) =>
     this.input?.click()
 
   refInput(x) =>
@@ -58,10 +59,11 @@ export default class DropTarget extends React.PureComponent:
 
   render() ->
     passedProps = Object.assign({}, this.props)
+    passedProps.style = Object.assign(passedProps.style, { cursor: 'pointer' })
 
     if not this.props.disableDrop:
-      passedProps[deviceEvents.react.drag] = this.handleDragOver
-      passedProps[deviceEvents.react.drop] = this.handleDrop
+      passedProps['onDragOver'] = this.handleDragOver
+      passedProps['onDrop'] = this.handleDrop
 
     if not this.props.disableClick:
       passedProps[this.props.clickEvent] = this.handleClick

@@ -9,16 +9,16 @@ isDataURL(str) ->
   return regex.test(str)
 
 export default class ImageLoader:
-  constructor(onLoad, onError, crossOrigin) ->
+  constructor(onLoad, onError, crossOrigin, extraData) ->
     this.onLoad = onLoad
     this.onError = onError
     this.crossOrigin = crossOrigin
+    this.extraData = extraData
 
   loadImage(imageURL) ->
     // eslint-disable-next-line no-undef
     const imageObj = new Image()
-    const onLoad = this.onLoad
-    imageObj.onload = -> onLoad(imageObj)
+    imageObj.onload = => this.onLoad(imageObj, this.extraData)
     imageObj.onerror = this.onError
     if !isDataURL(imageURL) && this.crossOrigin:
       imageObj.crossOrigin = this.crossOrigin
