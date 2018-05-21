@@ -1,6 +1,5 @@
 // Upload stuff to a place
 import createBlobFromDataURL from './createBlobFromDataURL'
-import createBehaviorSubject from 'observable-utils/lib/createBehaviorSubject'
 
 // Default XHR timeout; can be overridden by setting Uploader.timeout
 TIMEOUT = 30000
@@ -11,18 +10,17 @@ export default class Uploader:
     this.method = method
     this.uploadMimeType = uploadMimeType
     this.uploadQuality = uploadQuality
-    this.state$ = createBehaviorSubject()
     this.setState({uploader: this, state: 'NONE'})
 
-  setState(state) ->
+  setState(state): void ->
     this.state = Object.assign({}, this.state, state)
-    this.state$.next(this.state)
+    this.onStateChanged?(this.state)
 
-  failed(err) ->
+  failed(err): void ->
     this.setState({ state: 'FAILED', error: err, percentComplete: null })
     this.reject?(err)
 
-  succeeded() ->
+  succeeded(): void ->
     this.setState({ state: 'SUCCEEDED' })
     this.resolve?(this)
 
@@ -32,7 +30,7 @@ export default class Uploader:
       this.reject = reject
     )
 
-  uploadBlob(blob) =>
+  uploadBlob(blob): void =>
     // eslint-disable-next-line no-undef
     xhr = new XMLHttpRequest()
 
@@ -57,7 +55,7 @@ export default class Uploader:
     xhr.send(blob)
     this.setState({state: 'UPLOADING', percentComplete: 0})
 
-  uploadFromCanvas(canvas) ->
+  uploadFromCanvas(canvas): void ->
     if canvas.toBlob:
       this.setState({state: 'CONVERTING'})
       canvas.toBlob(this.uploadBlob, this.uploadMimeType, this.uploadQuality)
