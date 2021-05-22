@@ -1,6 +1,6 @@
 {
   "name": "nanotools",
-  "version": "0.1.8",
+  "version": "0.1.9",
   "description": "Small, fast, bundle-efficient utilities for general JavaScript.",
   "scripts": {
     "clean": "rimraf lib build",
